@@ -4,6 +4,8 @@ from pathlib import Path
 
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from backend.video_processor import analyze_video
 
@@ -14,6 +16,7 @@ MODEL_PATH = ROOT / "models" / "yolov8_table_tennis.pt"
 MP_MODELS = ROOT / "models" / "mediapipe"
 POSE_MODEL = MP_MODELS / "pose_landmarker_lite.task"
 HAND_MODEL = MP_MODELS / "hand_landmarker.task"
+FRONTEND_DIR = ROOT / "frontend"
 
 app = FastAPI()
 app.add_middleware(
@@ -23,6 +26,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
+
+@app.get("/")
+def index():
+    return FileResponse(FRONTEND_DIR / "index.html")
 
 
 @app.post("/analyze")

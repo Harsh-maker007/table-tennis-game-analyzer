@@ -6,10 +6,3 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     plan: free
-
-  - type: web
-    name: table-tennis-frontend
-    runtime: static
-    rootDir: table-tennis-ai/frontend
-    staticPublishPath: .
-    buildCommand: ""

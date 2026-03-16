@@ -37,8 +37,7 @@ const metricArm = document.getElementById("metricArm");
 const metricSpin = document.getElementById("metricSpin");
 const strokeCue = document.getElementById("strokeCue");
 
-const API_BASE =
-  (window.API_BASE && window.API_BASE.trim()) || "http://127.0.0.1:8000";
+const API_BASE = window.location.origin;
 const API_URL = `${API_BASE}/analyze`;
 let lastData = null;
 
