@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: table-tennis-backend
+    env: python
+    rootDir: table-tennis-ai
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+
+  - type: static
+    name: table-tennis-frontend
+    rootDir: table-tennis-ai/frontend
+    staticPublishPath: .
+    buildCommand: ""
+    envVars:
+      - key: API_BASE
+        value: https://table-tennis-backend.onrender.com
