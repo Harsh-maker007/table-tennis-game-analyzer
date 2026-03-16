@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Table Tennis AI Analyzer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">TableTennisAI</div>
+        <nav class="nav">
+          <span class="nav-item active">Dashboard</span>
+          <span class="nav-item">Live Match</span>
+          <span class="nav-item">Players</span>
+          <span class="nav-item">Analysis</span>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="hero-text">
+          <span class="pill">AI-Powered Analysis</span>
+          <h1>Table Tennis Match Analyzer</h1>
+          <p>
+            Upload a match video to get ball trajectory tracking, zone heatmaps,
+            shot analysis, and player movement insights.
+          </p>
+          <ul class="hero-list">
+            <li>Ball trajectory tracking</li>
+            <li>Shot success rates</li>
+            <li>Strengths & weaknesses</li>
+            <li>Table zone heatmap</li>
+            <li>Player movement map</li>
+            <li>Training recommendations</li>
+          </ul>
+        </div>
+        <div class="upload-card">
+          <h3>Upload Match Video</h3>
+          <input id="videoFile" type="file" accept="video/*" />
+          <button id="analyzeBtn">Analyze</button>
+          <div id="status" class="status"></div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <div class="card stats-card">
+          <h2>Match Summary</h2>
+          <div class="stats-grid">
+            <div class="stat">
+              <span class="label">Total Shots</span>
+              <span id="totalShots" class="value">0</span>
+            </div>
+            <div class="stat">
+              <span class="label">Success Rate</span>
+              <span id="successRate" class="value">0%</span>
+            </div>
+            <div class="stat">
+              <span class="label">Best Zone</span>
+              <span id="bestZone" class="value">-</span>
+            </div>
+            <div class="stat">
+              <span class="label">Weak Zone</span>
+              <span id="weakZone" class="value">-</span>
+            </div>
+            <div class="stat">
+              <span class="label">Left Coverage</span>
+              <span id="leftPct" class="value">0%</span>
+            </div>
+            <div class="stat">
+              <span class="label">Right Coverage</span>
+              <span id="rightPct" class="value">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Table Zone Map</h2>
+            <div class="filters">
+              <select id="playerFilter">
+                <option value="all">Overall</option>
+                <option value="A">Player A</option>
+                <option value="B">Player B</option>
+              </select>
+              <select id="resultFilter">
+                <option value="all">All</option>
+                <option value="win">Winning points</option>
+                <option value="loss">Losing points</option>
+                <option value="rally">Rally</option>
+              </select>
+            </div>
+          </div>
+          <div id="tableViz" class="table-viz"></div>
+          <div class="legend">
+            <span class="legend-item"><i class="dot win"></i> Win</span>
+            <span class="legend-item"><i class="dot loss"></i> Loss</span>
+            <span class="legend-item"><i class="dot rally"></i> Rally</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Zone Counts</h2>
+          <div id="zonesGrid" class="zones-grid"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Hand Movement</h2>
+            <div class="mini-stats">
+              <span>Left: <strong id="handLeftSpeed">0</strong> spd / <strong id="handLeftAngle">0°</strong></span>
+              <span>Right: <strong id="handRightSpeed">0</strong> spd / <strong id="handRightAngle">0°</strong></span>
+            </div>
+          </div>
+          <div id="handsViz" class="movement-viz"></div>
+          <div class="legend">
+            <span class="legend-item"><i class="dot rally"></i> Left hand</span>
+            <span class="legend-item"><i class="dot win"></i> Right hand</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Foot Movement</h2>
+            <div class="mini-stats">
+              <span>Left: <strong id="footLeftSpeed">0</strong> spd / <strong id="footLeftAngle">0°</strong></span>
+              <span>Right: <strong id="footRightSpeed">0</strong> spd / <strong id="footRightAngle">0°</strong></span>
+            </div>
+          </div>
+          <div id="feetViz" class="movement-viz"></div>
+          <div class="legend">
+            <span class="legend-item"><i class="dot rally"></i> Left foot</span>
+            <span class="legend-item"><i class="dot win"></i> Right foot</span>
+          </div>
+        </div>
+
+        <div class="card stroke-card">
+          <div class="card-header">
+            <h2>Stroke Library</h2>
+            <span class="pill subtle">21 strokes • 5 phases</span>
+          </div>
+          <div class="stroke-grid">
+            <div class="stroke-list">
+              <div class="stroke-group">
+                <h4>Serve</h4>
+                <div id="strokeServe" class="stroke-items"></div>
+              </div>
+              <div class="stroke-group">
+                <h4>Receive</h4>
+                <div id="strokeReceive" class="stroke-items"></div>
+              </div>
+              <div class="stroke-group">
+                <h4>Attack</h4>
+                <div id="strokeAttack" class="stroke-items"></div>
+              </div>
+              <div class="stroke-group">
+                <h4>Defence</h4>
+                <div id="strokeDefence" class="stroke-items"></div>
+              </div>
+              <div class="stroke-group">
+                <h4>Transition</h4>
+                <div id="strokeTransition" class="stroke-items"></div>
+              </div>
+            </div>
+            <div class="stroke-detail">
+              <h3 id="strokeTitle">Select a stroke</h3>
+              <p id="strokeChain" class="stroke-chain">Backswing load → Drive arc → Wrist snap → Follow-through</p>
+              <div class="stroke-metrics">
+                <div class="metric"><span>Swing plane</span><strong id="metricPlane">-</strong></div>
+                <div class="metric"><span>Wrist rotation</span><strong id="metricWrist">-</strong></div>
+                <div class="metric"><span>Arm segment</span><strong id="metricArm">-</strong></div>
+                <div class="metric"><span>Spin type</span><strong id="metricSpin">-</strong></div>
+              </div>
+              <div class="coach-cue">
+                <span>Coaching cue</span>
+                <p id="strokeCue">Click a stroke to view coaching guidance.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Point Events</h2>
+          <div class="events-table">
+            <div class="events-header">
+              <span>Frame</span>
+              <span>Player</span>
+              <span>Result</span>
+              <span>Zone</span>
+            </div>
+            <div id="eventsBody" class="events-body"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Shot Classification</h2>
+          <div class="shot-table">
+            <div class="shot-header">
+              <span>Shot</span>
+              <span>Count</span>
+            </div>
+            <div id="shotBody" class="shot-body"></div>
+          </div>
+          <p class="note">Shot types are heuristic based on ball speed and arc.</p>
+        </div>
+
+        <div class="card">
+          <h2>Raw Results</h2>
+          <pre id="results">No analysis yet.</pre>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // Set this to your Render backend URL when deployed.
+      // Example: window.API_BASE = "https://your-backend.onrender.com";
+    </script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>

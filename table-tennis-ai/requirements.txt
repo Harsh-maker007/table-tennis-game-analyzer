@@ -1,0 +1,9 @@
+opencv-python
+ultralytics
+mediapipe
+fastapi
+uvicorn
+numpy
+matplotlib
+plotly
+python-multipart
