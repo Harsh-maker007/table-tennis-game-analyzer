@@ -15,9 +15,15 @@ def analyze_video(
     class_id: int = 0,
     pose_model_path: str | Path | None = None,
     hand_model_path: str | Path | None = None,
+    frame_stride: int = 5,
+    max_frames: int = 600,
 ) -> Dict[str, Any]:
     ball_positions, frame_size, fps = track_ball(
-        video_path, model_path, class_id=class_id
+        video_path,
+        model_path,
+        class_id=class_id,
+        frame_stride=frame_stride,
+        max_frames=max_frames,
     )
     zones = analyze_zones(ball_positions, frame_size)
     width, height = frame_size

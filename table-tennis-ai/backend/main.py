@@ -73,11 +73,16 @@ async def analyze(video: UploadFile):
     pose_path = _ensure_model(POSE_MODEL, TMP_POSE, POSE_URL)
     hand_path = _ensure_model(HAND_MODEL, TMP_HAND, HAND_URL)
 
+    frame_stride = int(os.getenv("TTAI_FRAME_STRIDE", "5"))
+    max_frames = int(os.getenv("TTAI_MAX_FRAMES", "600"))
+
     result = analyze_video(
         path,
         model_path,
         class_id=32,
         pose_model_path=pose_path,
         hand_model_path=hand_path,
+        frame_stride=frame_stride,
+        max_frames=max_frames,
     )
     return result

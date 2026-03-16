@@ -20,6 +20,8 @@ def track_ball(
     video_path: str | Path,
     model_path: str | Path,
     class_id: int = 0,
+    frame_stride: int = 5,
+    max_frames: int = 600,
 ) -> Tuple[List[Dict[str, int]], Tuple[int, int], float]:
     model = _load_model(model_path)
     cap = cv2.VideoCapture(str(video_path))
@@ -33,9 +35,16 @@ def track_ball(
 
     ball_positions: List[Dict[str, int]] = []
     frame_idx = 0
+    processed = 0
     while True:
         ret, frame = cap.read()
         if not ret:
+            break
+        if frame_idx % frame_stride != 0:
+            frame_idx += 1
+            continue
+        processed += 1
+        if processed > max_frames:
             break
         results = model(frame)
         for box in results[0].boxes:

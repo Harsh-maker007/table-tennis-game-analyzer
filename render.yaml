@@ -6,3 +6,8 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     plan: free
+    envVars:
+      - key: TTAI_FRAME_STRIDE
+        value: "8"
+      - key: TTAI_MAX_FRAMES
+        value: "450"
