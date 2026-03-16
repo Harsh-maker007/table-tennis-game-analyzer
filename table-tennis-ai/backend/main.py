@@ -13,7 +13,7 @@ from backend.video_processor import analyze_video
 
 
 ROOT = Path(__file__).resolve().parent.parent
-UPLOAD_DIR = ROOT / "uploads"
+UPLOAD_DIR = Path(os.getenv("TMPDIR", "/tmp")) / "ttai_uploads"
 MODEL_PATH = ROOT / "models" / "yolov8_table_tennis.pt"
 MP_MODELS = ROOT / "models" / "mediapipe"
 POSE_MODEL = MP_MODELS / "pose_landmarker_lite.task"
@@ -85,4 +85,8 @@ async def analyze(video: UploadFile):
         frame_stride=frame_stride,
         max_frames=max_frames,
     )
+    try:
+        path.unlink(missing_ok=True)
+    except Exception:
+        pass
     return result
