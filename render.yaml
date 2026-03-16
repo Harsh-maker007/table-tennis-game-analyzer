@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: table-tennis-backend
+    name: table-tennis-game-analyzer
     runtime: python
     rootDir: table-tennis-ai
     buildCommand: pip install -r requirements.txt
