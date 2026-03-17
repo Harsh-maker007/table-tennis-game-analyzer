@@ -1,0 +1,1 @@
+-r table-tennis-ai/requirements.txt
