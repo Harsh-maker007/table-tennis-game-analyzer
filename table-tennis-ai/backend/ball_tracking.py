@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List, Tuple, Dict
 
-import cv2
 from ultralytics import YOLO
 
 
@@ -23,6 +22,13 @@ def track_ball(
     frame_stride: int = 5,
     max_frames: int = 600,
 ) -> Tuple[List[Dict[str, int]], Tuple[int, int], float]:
+    try:
+        import cv2
+    except Exception as exc:
+        raise RuntimeError(
+            "OpenCV is required to process video. Install a compatible "
+            "opencv-python-headless build or use a Python version with wheels."
+        ) from exc
     model = _load_model(model_path)
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():

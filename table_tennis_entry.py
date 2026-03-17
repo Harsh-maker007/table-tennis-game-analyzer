@@ -8,8 +8,6 @@ ROOT = Path(__file__).resolve().parent
 BACKEND_ROOT = ROOT / "table-tennis-ai"
 sys.path.append(str(BACKEND_ROOT))
 
-from backend.video_processor import analyze_video
-
 
 MODEL_PATH = BACKEND_ROOT / "models" / "yolov8_table_tennis.pt"
 MP_MODELS = BACKEND_ROOT / "models" / "mediapipe"
@@ -42,6 +40,8 @@ def _ensure_model(local_path: Path, fallback_path: Path, url: str) -> Path:
 
 
 def analyze_video_file(video_path: str):
+    from backend.video_processor import analyze_video
+
     model_path = _ensure_model(MODEL_PATH, TMP_MODEL, YOLO_FALLBACK_URL)
     pose_path = _ensure_model(POSE_MODEL, TMP_POSE, POSE_URL)
     hand_path = _ensure_model(HAND_MODEL, TMP_HAND, HAND_URL)

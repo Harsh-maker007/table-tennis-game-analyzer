@@ -19,7 +19,16 @@ if uploaded:
         tmp_path = tmp.name
 
     with st.spinner("Analyzing video..."):
-        result = analyze_video_file(tmp_path)
+        try:
+            result = analyze_video_file(tmp_path)
+        except Exception as exc:
+            st.error(
+                "Video analysis failed. This usually happens on Streamlit Cloud "
+                "because OpenCV wheels are not available for Python 3.14. "
+                "Please redeploy with Python 3.11 or use Docker/Railway."
+            )
+            st.exception(exc)
+            st.stop()
 
     st.success("Analysis complete.")
     st.subheader("Summary")
